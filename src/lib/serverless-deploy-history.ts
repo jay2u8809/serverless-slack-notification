@@ -6,10 +6,10 @@ import {
 } from './serverless/interface/serverless-config.interface';
 
 export class ServerlessDeployHistory {
-  private TAG = ServerlessDeployHistory.name;
+  private readonly TAG = ServerlessDeployHistory.name;
 
   private readonly sls: Serverless;
-  private hook: Hooks;
+  private hooks: Hooks;
 
   constructor(serverless: ServerlessApp, options: Options) {
     this.sls = {
@@ -17,7 +17,7 @@ export class ServerlessDeployHistory {
       options: options,
     };
 
-    this.hook = {
+    this.hooks = {
       initialize: () => this.init(),
     };
   }
