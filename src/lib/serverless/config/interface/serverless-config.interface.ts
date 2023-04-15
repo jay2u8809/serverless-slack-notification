@@ -2,7 +2,7 @@ import {
   AwsLambdaArchitectureType,
   AwsLambdaRuntimeType,
   AwsRegionType,
-} from '../providers/aws/config/interface/aws-config.interface';
+} from '../../providers/aws/config/interface/aws-config.interface';
 
 export type ProviderType = 'aws';
 export type FunctionRuntimeType = AwsLambdaRuntimeType;

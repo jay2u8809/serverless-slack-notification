@@ -3,8 +3,8 @@ import {
   Options,
   Serverless,
   ServerlessApp,
-} from './serverless/interface/serverless-config.interface';
-import { ConfigRepository } from './config/interface/config.repository';
+} from './serverless/config/interface/serverless-config.interface';
+import { ConfigRepository } from './config/config.repository';
 
 export class ServerlessDeployHistory {
   private readonly TAG = ServerlessDeployHistory.name;

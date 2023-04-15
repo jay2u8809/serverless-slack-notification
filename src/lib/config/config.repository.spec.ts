@@ -1,4 +1,4 @@
-import { ServerlessService } from '../../serverless/interface/serverless-config.interface';
+import { ServerlessService } from '../serverless/config/interface/serverless-config.interface';
 import { ConfigRepository } from './config.repository';
 
 const TAG = 'ConfigRepositoryTest';

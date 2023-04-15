@@ -1,4 +1,4 @@
-import { Custom } from '../../serverless/interface/serverless-config.interface';
+import { Custom } from '../../serverless/config/interface/serverless-config.interface';
 
 interface Stages {
   [stage: string]: boolean;

@@ -1,10 +1,10 @@
-import { Config, CONFIG_TITLE } from './config.interface';
+import { Config, CONFIG_TITLE } from './interface/config.interface';
 import {
   Custom,
   Functions,
   Provider,
   ServerlessService,
-} from '../../serverless/interface/serverless-config.interface';
+} from '../serverless/config/interface/serverless-config.interface';
 
 export class ConfigRepository {
   private static CUSTOM: Custom;
