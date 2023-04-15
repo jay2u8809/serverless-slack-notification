@@ -26,7 +26,7 @@ export interface Custom {
   Error: Error;
   errorCode: string;
 }
-interface ServerlessService {
+export interface ServerlessService {
   service: string;
   provider: Provider;
   functions: Functions;

@@ -1,9 +1,49 @@
-import { Custom } from '../../serverless/interface/serverless-config.interface';
-import { Config, PluginConfig } from './config.interface';
+import { Config, CONFIG_TITLE } from './config.interface';
+import {
+  Custom,
+  Functions,
+  Provider,
+  ServerlessService,
+} from '../../serverless/interface/serverless-config.interface';
 
 export class ConfigRepository {
-  static getPluginConfig(config: Custom): Config {
-    console.debug('get-plugin-config', PluginConfig.title, config);
-    return config[PluginConfig.title] as Config;
+  private static CUSTOM: Custom;
+  private static PROVIDER: Provider;
+  private static FUNCTIONS: Functions;
+
+  public static setConfig(serverless: ServerlessService): boolean {
+    return (
+      !!ConfigRepository.setCustom(serverless.custom) &&
+      !!ConfigRepository.setProvider(serverless.provider) &&
+      !!ConfigRepository.setFunctions(serverless.functions)
+    );
+  }
+
+  public static getCustom(): Config {
+    return <Config>ConfigRepository.CUSTOM;
+  }
+
+  public static getProvider(): Provider {
+    return <Provider>ConfigRepository.PROVIDER;
+  }
+
+  public static getFunctions(): Functions {
+    return <Functions>ConfigRepository.FUNCTIONS;
+  }
+
+  // === private ===
+  private static setCustom(custom: Custom): Custom {
+    ConfigRepository.CUSTOM = custom[CONFIG_TITLE] as Config;
+    return ConfigRepository.CUSTOM;
+  }
+
+  private static setProvider(provider: Provider): Provider {
+    ConfigRepository.PROVIDER = { ...provider };
+    return ConfigRepository.PROVIDER;
+  }
+
+  private static setFunctions(functions: Functions): Functions {
+    ConfigRepository.FUNCTIONS = { ...functions };
+    return ConfigRepository.FUNCTIONS;
   }
 }

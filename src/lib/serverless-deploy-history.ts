@@ -10,7 +10,7 @@ export class ServerlessDeployHistory {
   private readonly TAG = ServerlessDeployHistory.name;
 
   private readonly sls: Serverless;
-  private hooks: Hooks;
+  private readonly hooks: Hooks;
 
   constructor(serverless: ServerlessApp, options: Options) {
     this.sls = {
@@ -24,17 +24,16 @@ export class ServerlessDeployHistory {
   }
 
   init() {
-    console.log(this.TAG, `init-plugin`);
-
+    console.debug(this.TAG, `init-plugin`);
     // processing to get custom settings from serverless.yaml
-    ConfigRepository.getPluginConfig(this.sls.app.service.custom);
+    ConfigRepository.setConfig(this.sls.app.service);
   }
 
   beforeDeploy() {
-    console.log(this.TAG, `before-deploy`);
+    console.debug(this.TAG, `before-deploy`);
   }
 
   afterDeploy() {
-    console.log(this.TAG, `after-deploy`);
+    console.debug(this.TAG, `after-deploy`);
   }
 }
