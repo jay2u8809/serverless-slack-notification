@@ -55,6 +55,10 @@ describe('ConfigRepositoryTest', () => {
     sls = { ...config } as ServerlessService;
   });
 
+  it('defined', () => {
+    expect(sls).toBeDefined();
+  });
+
   it('set serverless config', () => {
     const result = ConfigRepository.setConfig(sls);
     // console.debug(TAG, 'result', result);
