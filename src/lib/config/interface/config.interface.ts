@@ -34,3 +34,7 @@ export interface Config extends Custom {
   // UTC time zone - ex) JST: 9, EST: -5, ACST: 9.5
   timezone?: number;
 }
+
+export const PluginConfig = {
+  title: 'serverless-deploy-history',
+};
