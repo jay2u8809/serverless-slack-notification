@@ -31,6 +31,8 @@ export interface Config extends Custom {
   // deploy history type
   deployHistory: DeployHistory;
 
+  userName?: string;
+
   // UTC time zone - ex) JST: 9, EST: -5, ACST: 9.5
   timezone?: number;
 }

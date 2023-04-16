@@ -27,6 +27,7 @@ const config: object = {
       stages: {
         dev: true,
       },
+      userName: 'temp-user-name',
       deployHistory: {
         slack: {
           enable: true,
