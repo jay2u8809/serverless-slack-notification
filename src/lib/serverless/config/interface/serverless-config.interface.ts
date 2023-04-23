@@ -3,6 +3,7 @@ import {
   AwsLambdaRuntimeType,
   AwsRegionType,
 } from '../../providers/aws/config/interface/aws-config.interface';
+import { Config } from '../../../config/interface/config.interface';
 
 export type ProviderType = 'aws';
 export type FunctionRuntimeType = AwsLambdaRuntimeType;
@@ -21,16 +22,11 @@ export interface Functions {
     name: string;
   };
 }
-export interface Custom {
-  name: string;
-  Error: Error;
-  errorCode: string;
-}
 export interface ServerlessService {
   service: string;
   provider: Provider;
   functions: Functions;
-  custom: Custom;
+  custom: Config;
 }
 export interface ServerlessApp {
   service: ServerlessService;
