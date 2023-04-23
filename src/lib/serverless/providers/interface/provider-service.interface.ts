@@ -3,6 +3,7 @@ import {
   Functions,
   Provider,
 } from '../../config/interface/serverless-config.interface';
+import { AwsRegionType } from '../aws/config/interface/aws-config.interface';
 
 export interface ProviderInterface {
   /**
@@ -16,4 +17,6 @@ export interface ProviderInterface {
    * @param provider
    */
   fetchFunctionRuntime(provider?: Provider): FunctionRuntimeType;
+
+  fetchRegion(provider?: Provider): AwsRegionType;
 }

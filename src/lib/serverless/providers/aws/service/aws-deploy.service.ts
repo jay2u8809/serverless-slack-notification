@@ -9,6 +9,8 @@ import { ConfigRepository } from '../../../../config/config.repository';
 
 export class AwsDeployService implements ProviderInterface {
   public fetchFunctionNames(functions?: Functions): string[] {
+    if (!functions && ConfigRepository.getCliOptions().functions)
+      return [...ConfigRepository.getCliOptions().functions];
     return this.fetchAwsLambdaNames(
       functions || ConfigRepository.getFunctions(),
     );

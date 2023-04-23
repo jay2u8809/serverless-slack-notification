@@ -36,7 +36,6 @@ const config: object = {
         },
         file: {
           enable: false,
-          type: 'csv',
           path: './',
         },
       },
@@ -74,7 +73,7 @@ describe('AwsDeployServiceTest', () => {
   });
 
   describe('fetchFunctionNames', () => {
-    it('OK-fetch aws lambda names', () => {
+    it('OK: fetch aws lambda names', () => {
       const param: Functions = { ...sls.functions } as Functions;
       const result: string[] = service.fetchFunctionNames(param);
       // console.debug(TAG, 'result', result);
@@ -85,7 +84,7 @@ describe('AwsDeployServiceTest', () => {
       ]);
     });
 
-    it('OK-fetch aws lambda names: without param', () => {
+    it('OK: fetch aws lambda names: without param', () => {
       const result: string[] = service.fetchFunctionNames();
       // console.debug(TAG, 'result', result);
       expect(result).toEqual([
@@ -95,7 +94,7 @@ describe('AwsDeployServiceTest', () => {
       ]);
     });
 
-    it('NG-fetch aws lambda names: empty param', () => {
+    it('OK: fetch aws lambda names: empty param', () => {
       const param: Functions = {} as Functions;
       const result: string[] = service.fetchFunctionNames(param);
       // console.debug(TAG, 'result', result);
@@ -103,7 +102,7 @@ describe('AwsDeployServiceTest', () => {
       expect(result).toHaveLength(0);
     });
 
-    it('NG-fetch aws lambda names: add fields', () => {
+    it('OK: fetch aws lambda names: add fields', () => {
       const param: Functions = { ...sls.functions } as Functions;
       // add field
       param['main']['etc'] = 'etc';
@@ -119,14 +118,14 @@ describe('AwsDeployServiceTest', () => {
   });
 
   describe('fetchFunctionRuntime', () => {
-    it('OK-fetch aws lambda runtime', () => {
+    it('OK: fetch aws lambda runtime', () => {
       const param: Provider = { ...sls.provider } as Provider;
       const result: FunctionRuntimeType = service.fetchFunctionRuntime(param);
       // console.debug(TAG, 'result', result);
       expect(result).toEqual('nodejs14.x');
     });
 
-    it('OK-fetch aws lambda runtime: without param', () => {
+    it('OK: fetch aws lambda runtime: without param', () => {
       const result: FunctionRuntimeType = service.fetchFunctionRuntime();
       // console.debug(TAG, 'result', result);
       expect(result).toEqual('nodejs14.x');
@@ -134,14 +133,14 @@ describe('AwsDeployServiceTest', () => {
   });
 
   describe('fetchRegion', () => {
-    it('OK-fetch aws region', () => {
+    it('OK: fetch aws region', () => {
       const param: Provider = { ...sls.provider } as Provider;
       const result: AwsRegionType = service.fetchRegion(param);
       // console.debug(TAG, 'result', result);
       expect(result).toEqual('us-east-1');
     });
 
-    it('OK-fetch aws region: without param', () => {
+    it('OK: fetch aws region: without param', () => {
       const result: AwsRegionType = service.fetchRegion();
       // console.debug(TAG, 'result', result);
       expect(result).toEqual('us-east-1');
