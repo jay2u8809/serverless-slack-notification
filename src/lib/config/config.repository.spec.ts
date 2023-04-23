@@ -1,9 +1,12 @@
-import { ServerlessService } from '../serverless/config/interface/serverless-config.interface';
+import {
+  Options,
+  ServerlessService,
+} from '../serverless/config/interface/serverless-config.interface';
 import { ConfigRepository } from './config.repository';
 
 const TAG = 'ConfigRepositoryTest';
 
-const config: object = {
+const config: any = {
   service: 'temp-lambda',
   provider: {
     name: 'aws',
@@ -29,11 +32,9 @@ const config: object = {
         },
         file: {
           enable: false,
-          type: 'csv',
           path: './',
         },
       },
-      timezone: 9,
     },
   },
   functions: {
@@ -49,41 +50,83 @@ const config: object = {
   },
 };
 
+const cliOptions: any = {
+  stage: 'staging',
+  config: 'serverless.ts',
+};
+
 describe('ConfigRepositoryTest', () => {
   let sls: ServerlessService;
+  let cli: Options;
 
   beforeEach(async () => {
     sls = { ...config } as ServerlessService;
+    cli = { ...cliOptions } as Options;
   });
 
   it('defined', () => {
     expect(sls).toBeDefined();
+    expect(cli).toBeDefined();
   });
 
-  it('set serverless config', () => {
-    const result = ConfigRepository.setConfig(sls);
-    // console.debug(TAG, 'result', result);
-    expect(result).toEqual(true);
+  describe('get config', () => {
+    beforeEach(() => {
+      ConfigRepository.setConfig(sls);
+    });
+
+    it('OK: get service name', () => {
+      const result = ConfigRepository.getServiceName();
+      // console.debug(TAG, 'result', result);
+      expect(result).toEqual(sls.service);
+    });
+
+    // it is test getting custom item in serverless.yaml file
+    it('OK: get custom config', () => {
+      const result = ConfigRepository.getCustom();
+      // console.debug(TAG, 'result', result);
+      expect(result).toEqual(sls.custom['serverless-deploy-history']);
+    });
+
+    // it is test getting provider item in serverless.yaml file
+    it('OK: get provider config', () => {
+      const result = ConfigRepository.getProvider();
+      // console.debug(TAG, 'result', result);
+      expect(result).toEqual(sls.provider);
+    });
+
+    // it is test getting functions item in serverless.yaml file
+    it('OK: get functions config', () => {
+      const result = ConfigRepository.getFunctions();
+      // console.debug(TAG, 'result', result);
+      expect(result).toEqual(sls.functions);
+    });
+
+    it('OK: get cli options', () => {
+      const result = ConfigRepository.getCliOptions();
+      console.debug(TAG, 'result', result);
+      expect(result).toEqual({});
+    });
+
+    it('OK: get cli options', () => {
+      // set config
+      ConfigRepository.setConfig(sls, cli);
+      const result = ConfigRepository.getCliOptions();
+      // console.debug(TAG, 'result', result);
+      expect(result).toEqual(cli);
+    });
   });
 
-  // it is test getting custom item in serverless.yaml file
-  it('get custom config', () => {
-    const result = ConfigRepository.getCustom();
-    // console.debug(TAG, 'result', result);
-    expect(result).toEqual(sls.custom['serverless-deploy-history']);
-  });
+  describe('set config', () => {
+    it('OK: set serverless config', () => {
+      const result = ConfigRepository.setConfig(sls);
+      // console.debug(TAG, 'result', result);
+      expect(result).toEqual(true);
+    });
 
-  // it is test getting provider item in serverless.yaml file
-  it('get provider config', () => {
-    const result = ConfigRepository.getProvider();
-    // console.debug(TAG, 'result', result);
-    expect(result).toEqual(sls.provider);
-  });
-
-  // it is test getting functions item in serverless.yaml file
-  it('get functions config', () => {
-    const result = ConfigRepository.getFunctions();
-    // console.debug(TAG, 'result', result);
-    expect(result).toEqual(sls.functions);
+    it('OK: set serverless config with cli options', () => {
+      const result = ConfigRepository.setConfig(sls, cli);
+      // console.debug(TAG, 'result', result);
+      expect(result).toEqual(true);
+    });
   });
 });
