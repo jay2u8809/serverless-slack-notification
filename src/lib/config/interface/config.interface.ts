@@ -25,3 +25,12 @@ export interface Config {
 }
 
 export const CONFIG_TITLE = 'serverless-deploy-history';
+
+export const FileConfig = {
+  CsvFileName: (stage?: string): string => {
+    return `deploy-history-${stage || 'dev'}.csv`;
+  },
+  CsvPath: (name?: string): string => {
+    return `./${name || FileConfig.CsvFileName()}`;
+  },
+};

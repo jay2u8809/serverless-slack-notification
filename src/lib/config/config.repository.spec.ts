@@ -59,7 +59,7 @@ describe('ConfigRepositoryTest', () => {
   let sls: ServerlessService;
   let cli: Options;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     sls = { ...config } as ServerlessService;
     cli = { ...cliOptions } as Options;
   });
