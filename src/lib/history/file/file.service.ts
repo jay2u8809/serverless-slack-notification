@@ -24,13 +24,18 @@ export class FileService {
   private generateFileName(path: string): string {
     const filePath = path || `${FileConfig.CsvPath()}`;
     const paths: string[] = filePath.split('/');
-    const filename = paths.pop();
+    const filename = paths.pop() || `${FileConfig.CsvFileName()}`;
     return `${paths.join('/')}/${new Date().getTime()}_${filename}`;
   }
 
   private convertCsv(data: CsvDto): string {
-    const header = Object.keys(data).join(',');
-    const contents = Object.values(data).join(',');
+    const keys: string[] = Object.keys(data);
+    const header = keys.join(',');
+    const contents = keys
+      .map((key: string) =>
+        Array.isArray(data[key]) ? [...data[key]].join(';') : data[key],
+      )
+      .join(',');
     return header + '\n' + contents;
   }
 }
