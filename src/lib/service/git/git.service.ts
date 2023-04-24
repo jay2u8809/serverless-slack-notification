@@ -1,8 +1,7 @@
-import * as childProcess from 'node:child_process';
 import * as os from 'os';
 import { GitInfo } from './interface/git-info.interface';
-import { ChildProcess } from 'child_process';
 import { ConfigRepository } from '../../config/config.repository';
+import { MiscRepository } from '../misc/misc.repository';
 
 export class GitService {
   private readonly TAG = GitService.name;
@@ -10,14 +9,14 @@ export class GitService {
   public async fetchGitInfo(): Promise<GitInfo> {
     try {
       const [branchName, config, hash] = await Promise.all([
-        this.commandExec('git branch --show-current'), // or git name-rev --name-only HEAD
-        this.commandExec('git config --list'),
-        this.commandExec('git rev-parse HEAD'),
+        MiscRepository.commandExec('git branch --show-current'), // or git name-rev --name-only HEAD
+        MiscRepository.commandExec('git config --list'),
+        MiscRepository.commandExec('git rev-parse HEAD'),
       ]);
       return {
         userName: this.fetchUserName(config),
-        branchName: branchName,
-        hash: hash,
+        branchName: MiscRepository.convertChar(branchName, '\n', ''),
+        hash: MiscRepository.convertChar(hash, '\n', ''),
         revision: hash.slice(0, 7),
       } as GitInfo;
     } catch (e) {
@@ -27,29 +26,11 @@ export class GitService {
   }
 
   // === private ===
-  private async commandExec(cmd: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const result: ChildProcess = childProcess.exec(cmd, {
-        encoding: 'utf8',
-      });
-      result.stdout
-        .on('error', (err: Error) => {
-          console.error(this.TAG, 'command-exec-error', err);
-          reject(false);
-        })
-        .on('data', (data) => {
-          resolve(data);
-        });
-    });
-  }
-
   private fetchUserName(param: string): string {
     let userName = ConfigRepository.getCustom()?.userName;
     if (!userName) {
       // convert new-line character
-      const convert: string = Array.from(param || '')
-        .map((item: string) => (item === '\r' || item === '\r\n' ? '\n' : item))
-        .join('');
+      const convert = MiscRepository.convertChar(param, '\r', '\n');
       // extract username from git config (or hostname of OS, default)
       userName =
         convert
