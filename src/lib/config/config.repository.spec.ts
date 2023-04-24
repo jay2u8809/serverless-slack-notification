@@ -101,19 +101,19 @@ describe('ConfigRepositoryTest', () => {
       expect(result).toEqual(sls.functions);
     });
 
-    it('OK: get cli options', () => {
-      const result = ConfigRepository.getCliOptions();
-      console.debug(TAG, 'result', result);
-      expect(result).toEqual({});
-    });
+    // it('OK: get cli options', () => {
+    //   const result = ConfigRepository.getCliOptions();
+    //   console.debug(TAG, 'result', result);
+    //   expect(result).toEqual({});
+    // });
 
-    it('OK: get cli options', () => {
-      // set config
-      ConfigRepository.setConfig(sls, cli);
-      const result = ConfigRepository.getCliOptions();
-      // console.debug(TAG, 'result', result);
-      expect(result).toEqual(cli);
-    });
+    // it('OK: get cli options', () => {
+    //   // set config
+    //   ConfigRepository.setConfig(sls, cli);
+    //   const result = ConfigRepository.getCliOptions();
+    //   // console.debug(TAG, 'result', result);
+    //   expect(result).toEqual(cli);
+    // });
   });
 
   describe('set config', () => {

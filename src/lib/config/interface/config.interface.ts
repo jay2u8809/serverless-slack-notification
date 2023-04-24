@@ -1,4 +1,4 @@
-interface Stages {
+export interface Stages {
   [stage: string]: boolean;
 }
 
@@ -15,7 +15,7 @@ interface FileSetting {
 
 export type DeployHistory = {
   slack: SlackSetting;
-  csv: FileSetting;
+  file: FileSetting;
 };
 
 export interface Config {

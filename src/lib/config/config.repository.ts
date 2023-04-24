@@ -17,13 +17,13 @@ export class ConfigRepository {
     serverless: ServerlessService,
     cli?: Options,
   ): boolean {
-    ConfigRepository.setCliOptions(cli);
-    return (
+    const result: boolean =
       !!ConfigRepository.setServiceName(serverless.service) &&
       !!ConfigRepository.setCustom(serverless.custom) &&
       !!ConfigRepository.setProvider(serverless.provider) &&
-      !!ConfigRepository.setFunctions(serverless.functions)
-    );
+      !!ConfigRepository.setFunctions(serverless.functions);
+    ConfigRepository.setCliOptions(cli);
+    return result;
   }
 
   public static getServiceName(): string {
@@ -68,7 +68,12 @@ export class ConfigRepository {
   }
 
   public static setCliOptions(cli: Options): Options {
-    ConfigRepository.CLI_OPTIONS = { ...cli };
+    const stageName = ConfigRepository.getProvider().stage;
+    const checkStage: boolean = ConfigRepository.getCustom().stages[stageName];
+    ConfigRepository.CLI_OPTIONS = {
+      ...cli,
+      stage: checkStage ? stageName : 'dev',
+    };
     return <Options>ConfigRepository.CLI_OPTIONS;
   }
 }
