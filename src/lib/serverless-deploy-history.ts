@@ -1,40 +1,41 @@
-import {
-  Hooks,
-  Options,
-  Serverless,
-  ServerlessApp,
-} from './serverless/interface/serverless-config.interface';
-import { ConfigRepository } from './config/interface/config.repository';
+import Serverless from 'serverless';
+import { ServerlessDeployHistoryDto } from './interface/serverless-deploy-history.dto';
+import { ServerlessDeployHistoryService } from './service/serverless-deploy-history.service';
 
 export class ServerlessDeployHistory {
-  private readonly TAG = ServerlessDeployHistory.name;
+  hooks: { [key: string]: () => void };
+  dto: ServerlessDeployHistoryDto;
 
-  private readonly sls: Serverless;
-  private hooks: Hooks;
-
-  constructor(serverless: ServerlessApp, options: Options) {
-    this.sls = {
-      app: serverless,
-      options: options,
-    };
-
+  constructor(
+    private readonly serverless: Serverless,
+    private readonly options: Serverless.Options,
+  ) {
     this.hooks = {
-      initialize: () => this.init(),
+      // 'before:package:createDeploymentArtifacts': this.beforeCreateDeploymentArtifacts.bind(this),
+      // 'after:package:createDeploymentArtifacts': this.afterCreateDeploymentArtifacts.bind(this),
+      'package:initialize': this.beforeCreateDeploymentArtifacts.bind(this),
+      'package:finalize': this.afterCreateDeploymentArtifacts.bind(this),
     };
   }
 
-  init() {
-    console.log(this.TAG, `init-plugin`);
-
-    // processing to get custom settings from serverless.yaml
-    ConfigRepository.getPluginConfig(this.sls.app.service.custom);
+  async beforeCreateDeploymentArtifacts() {
+    const service = new ServerlessDeployHistoryService();
+    this.dto = {
+      name: this.serverless.service.service,
+      stage: this.options.stage || 'dev',
+      userName: this.serverless.service.custom['serverless-deploy-history'].userName,
+      begin: new Date().toISOString(),
+      revision: await service.fetchRevision(),
+      branch: await service.fetchBranchName(),
+    };
+    console.debug('before-deploy-dto', this.dto);
   }
 
-  beforeDeploy() {
-    console.log(this.TAG, `before-deploy`);
-  }
-
-  afterDeploy() {
-    console.log(this.TAG, `after-deploy`);
+  afterCreateDeploymentArtifacts() {
+    // generate deploy history: send slack, put s3, ...
+    const apiUrl = this.serverless.service.custom['serverless-deploy-history'].slack.apiUrl;
+    console.debug('after-deploy-apiUrl', apiUrl);
+    this.dto.end = new Date().toISOString();
+    console.debug('after-deploy-dto', this.dto);
   }
 }
