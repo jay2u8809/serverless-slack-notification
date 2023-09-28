@@ -12,10 +12,8 @@ export class ServerlessDeployHistory {
     private readonly options: Serverless.Options,
   ) {
     this.hooks = {
-      // 'before:package:createDeploymentArtifacts': this.beforeCreateDeploymentArtifacts.bind(this),
-      // 'after:package:createDeploymentArtifacts': this.afterCreateDeploymentArtifacts.bind(this),
-      'package:initialize': this.beforeCreateDeploymentArtifacts.bind(this),
-      'package:finalize': this.afterCreateDeploymentArtifacts.bind(this),
+      'before:package:createDeploymentArtifacts': this.beforeCreateDeploymentArtifacts.bind(this),
+      'after:deploy:deploy': this.afterCreateDeploymentArtifacts.bind(this),
     };
     this.service = new ServerlessDeployHistoryService(this.serverless, this.options);
   }
