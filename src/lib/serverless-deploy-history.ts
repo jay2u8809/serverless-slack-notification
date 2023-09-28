@@ -27,5 +27,6 @@ export class ServerlessDeployHistory {
   async afterCreateDeploymentArtifacts() {
     const result = await this.service.end(this.dto);
     console.assert(result, 'Fail to send deployment history');
+    console.log('=== SERVERLESS DEPLOY HISTORY: COMPLETE ===');
   }
 }

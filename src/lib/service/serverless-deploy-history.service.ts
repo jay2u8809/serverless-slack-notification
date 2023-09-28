@@ -50,7 +50,6 @@ export class ServerlessDeployHistoryService {
   async sendSlack(url: string, dto: ServerlessDeployHistoryDto): Promise<boolean> {
     // make rich message
     const data = this.makeRichMessageTemplate(dto, this.getConfigInfo().slack.title);
-    console.debug(TAG, 'slack-data', JSON.stringify(data));
     try {
       // send slack message
       const response = await axios.post(url, data, {
