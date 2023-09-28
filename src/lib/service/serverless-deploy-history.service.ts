@@ -4,14 +4,9 @@ import Serverless from 'serverless';
 import axios from 'axios';
 import { ServerlessDeployHistoryDto } from '../interface/serverless-deploy-history.dto';
 import { DeployHistoryCustom } from '../interface/deploy-history-custom.interface';
+import { Info } from '../interface/deploy-history-info.interface';
 
 const TAG = 'ServerlessDeployHistoryService';
-
-const GitCommand = {
-  USER_NAME: 'git config user.name',
-  BRANCH_NAME: 'git branch --show-current',
-  REVISION: 'git rev-parse HEAD',
-}
 
 type DeployHistoryParam = {
   name: string;
@@ -85,9 +80,9 @@ export class ServerlessDeployHistoryService {
 
   private async initDeployHistoryDto(param: DeployHistoryParam): Promise<ServerlessDeployHistoryDto> {
     const [userName, branch, revision]: string[] = await Promise.all([
-      this.execCommand(GitCommand.USER_NAME),
-      this.execCommand(GitCommand.BRANCH_NAME),
-      this.execCommand(GitCommand.REVISION),
+      this.execCommand(Info.GIT_COMMAND.USER_NAME),
+      this.execCommand(Info.GIT_COMMAND.BRANCH_NAME),
+      this.execCommand(Info.GIT_COMMAND.REVISION),
     ]);
     const now = new Date();
     return {
@@ -102,13 +97,13 @@ export class ServerlessDeployHistoryService {
   }
 
   private getConfigInfo(): DeployHistoryCustom {
-    const PLUGIN_NAME = 'serverless-deploy-history';
+    const PLUGIN_NAME = Info.PLUGIN_NAME;
     return this.serverless.service.custom[PLUGIN_NAME] as DeployHistoryCustom;
   }
 
   private makeRichMessageTemplate(
     dto: ServerlessDeployHistoryDto,
-    title: string = 'Deployment History Notification'
+    title: string
   ): object {
     const map = new Map<string, string>()
       .set('name', dto.name).set('stage', dto.stage)
@@ -122,7 +117,7 @@ export class ServerlessDeployHistoryService {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `[${dto.stage}] *${title}*`,
+            text: `[${dto.stage}] *${title || Info.SLACK.TITLE}*`,
           },
         },
         {

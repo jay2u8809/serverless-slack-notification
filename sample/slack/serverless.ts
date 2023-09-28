@@ -11,9 +11,9 @@ const serverlessConfiguration: AWS = {
   },
   custom: {
     'serverless-deploy-history': {
-      userName: 'sample-slack-user',
       slack: {
         apiUrl: 'sample-slack-api-ulrs',
+        title: 'slack message title', // default: Deployment History Notification
       },
     },
   },
