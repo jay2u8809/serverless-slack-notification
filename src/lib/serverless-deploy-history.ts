@@ -5,6 +5,7 @@ import { ServerlessDeployHistoryService } from './service/serverless-deploy-hist
 export class ServerlessDeployHistory {
   hooks: { [key: string]: () => void };
   dto: ServerlessDeployHistoryDto;
+  service: ServerlessDeployHistoryService;
 
   constructor(
     private readonly serverless: Serverless,
@@ -16,26 +17,15 @@ export class ServerlessDeployHistory {
       'package:initialize': this.beforeCreateDeploymentArtifacts.bind(this),
       'package:finalize': this.afterCreateDeploymentArtifacts.bind(this),
     };
+    this.service = new ServerlessDeployHistoryService(this.serverless, this.options);
   }
 
   async beforeCreateDeploymentArtifacts() {
-    const service = new ServerlessDeployHistoryService();
-    this.dto = {
-      name: this.serverless.service.service,
-      stage: this.options.stage || 'dev',
-      userName: this.serverless.service.custom['serverless-deploy-history'].userName,
-      begin: new Date().toISOString(),
-      revision: await service.fetchRevision(),
-      branch: await service.fetchBranchName(),
-    };
-    console.debug('before-deploy-dto', this.dto);
+    this.dto = await this.service.begin();
   }
 
-  afterCreateDeploymentArtifacts() {
-    // generate deploy history: send slack, put s3, ...
-    const apiUrl = this.serverless.service.custom['serverless-deploy-history'].slack.apiUrl;
-    console.debug('after-deploy-apiUrl', apiUrl);
-    this.dto.end = new Date().toISOString();
-    console.debug('after-deploy-dto', this.dto);
+  async afterCreateDeploymentArtifacts() {
+    const result = await this.service.end(this.dto);
+    console.assert(result, 'Fail to send deployment history');
   }
 }

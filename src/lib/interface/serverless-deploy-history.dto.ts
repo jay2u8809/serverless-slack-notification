@@ -6,4 +6,6 @@ export class ServerlessDeployHistoryDto {
   branch?: string;
   begin?: string;
   end?: string;
+  localBegin?: string;
+  localEnd?: string;
 }
