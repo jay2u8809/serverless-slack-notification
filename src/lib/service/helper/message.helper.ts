@@ -24,7 +24,7 @@ export class MessageHelper {
     const map = new Map<string, string>()
       .set('name', dto.name).set('stage', dto.stage)
       .set('branch', dto.branch).set('revision', dto.revision)
-      .set('endAt', dto.endAt).set('localEndAt', dto.localEndAt)
+      .set('end_at', dto.endAt).set('local_end_at', dto.localEndAt)
       .set('user', dto.userName);
     return {
       blocks: [
