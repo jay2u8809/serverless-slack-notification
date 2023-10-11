@@ -21,7 +21,7 @@ export class ServerlessDeployHistoryRunner {
   // === private ===
   private async sendNotification(dto: ServerlessDeployHistoryDto): Promise<boolean> {
     // slack webhook url
-    const url = this.getSlsCustomInfo().slack.url;
+    const url = this.getSlsCustomInfo().slack.webhook;
 
     const helper: MessageHelper = new MessageHelper();
     // make rich message

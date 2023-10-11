@@ -4,7 +4,7 @@ export const Config = {
     BRANCH_NAME: 'git branch --show-current',
     REVISION: 'git rev-parse HEAD',
   },
-  Title: 'serverless-deploy-history',
+  Title: 'serverlessDeployHistory',
   Slack: {
     title: 'Deployment History Notification',
   },
