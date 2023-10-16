@@ -19,12 +19,15 @@ export class MessageHelper {
 
   makeRichMessageTemplate(
     dto: ServerlessDeployHistoryDto,
-    title: string
+    title: string,
   ): object {
     const map = new Map<string, string>()
-      .set('name', dto.name).set('stage', dto.stage)
-      .set('branch', dto.branch).set('revision', dto.revision)
-      .set('end_at', dto.endAt).set('local_end_at', dto.localEndAt)
+      .set('name', dto.name)
+      .set('stage', dto.stage)
+      .set('branch', dto.branch)
+      .set('revision', dto.revision)
+      .set('end_at', dto.endAt)
+      .set('local_end_at', dto.localEndAt)
       .set('user', dto.userName);
     return {
       blocks: [
@@ -37,15 +40,14 @@ export class MessageHelper {
         },
         {
           type: 'section',
-          fields: [...map.entries()].map(
-            (item: [string, string]) => {
-              return {
-                type: 'mrkdwn',
-                text: `*${item[0].toUpperCase()}: *\n ${item[1]}`,
-              };
-            }),
+          fields: [...map.entries()].map((item: [string, string]) => {
+            return {
+              type: 'mrkdwn',
+              text: `*${item[0].toUpperCase()}: *\n ${item[1]}`,
+            };
+          }),
         },
       ],
-    }
+    };
   }
 }
