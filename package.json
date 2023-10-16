@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "description": "Create various types of history when deploying with serverless framework",
   "author": "jay2u8809",
-  "private": true,
   "license": "MIT",
   "main": "./dist/src/index.js",
   "scripts": {
