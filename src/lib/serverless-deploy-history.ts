@@ -14,7 +14,10 @@ export class ServerlessDeployHistory {
     this.hooks = {
       'after:deploy:deploy': this.afterDeploy.bind(this),
     };
-    this.runner = new ServerlessDeployHistoryRunner(this.serverless, this.options);
+    this.runner = new ServerlessDeployHistoryRunner(
+      this.serverless,
+      this.options,
+    );
   }
 
   async afterDeploy() {

@@ -10,8 +10,8 @@ const TAG = 'ServerlessDeployHistoryService';
 export class ServerlessDeployHistoryRunner {
   constructor(
     private readonly serverless: Serverless,
-    private readonly options: Serverless.Options
-  ) { }
+    private readonly options: Serverless.Options,
+  ) {}
 
   async exec(): Promise<boolean> {
     const dto: ServerlessDeployHistoryDto = await this.initDeployHistoryDto();
@@ -19,7 +19,9 @@ export class ServerlessDeployHistoryRunner {
   }
 
   // === private ===
-  private async sendNotification(dto: ServerlessDeployHistoryDto): Promise<boolean> {
+  private async sendNotification(
+    dto: ServerlessDeployHistoryDto,
+  ): Promise<boolean> {
     // slack webhook url
     const url = this.getSlsCustomInfo().slack.webhook;
 
@@ -27,7 +29,7 @@ export class ServerlessDeployHistoryRunner {
     // make rich message
     const data = helper.makeRichMessageTemplate(
       dto,
-      this.getSlsCustomInfo().slack.title || Config.Slack.title
+      this.getSlsCustomInfo().slack.title || Config.Slack.title,
     );
     // send slack message
     return helper.sendSlackMessage(url, data);
@@ -36,7 +38,8 @@ export class ServerlessDeployHistoryRunner {
   private async initDeployHistoryDto(): Promise<ServerlessDeployHistoryDto> {
     const helper: DeployHistoryHelper = new DeployHistoryHelper();
     return helper.generateDeployHistoryDto(
-      this.serverless.service.service, this.options.stage
+      this.serverless.service.service,
+      this.options.stage,
     );
   }
 

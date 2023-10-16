@@ -15,7 +15,6 @@
     "@serverless/typescript": "^3.29.0",
     "@slack/web-api": "^6.8.1",
     "@types/node": "^16.0.0",
-    "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "eslint": "^8.0.1",

@@ -16,13 +16,16 @@ export class DeployHistoryHelper {
         })
         .on('data', (data: string) => {
           // remove new-line character
-          const result: string = [...data].filter(c => c !== '\n').join('');
+          const result: string = [...data].filter((c) => c !== '\n').join('');
           resolve(result);
         });
     });
   }
 
-  async generateDeployHistoryDto(name: string, stage?: string): Promise<ServerlessDeployHistoryDto> {
+  async generateDeployHistoryDto(
+    name: string,
+    stage?: string,
+  ): Promise<ServerlessDeployHistoryDto> {
     const [userName, branch, revision]: string[] = await Promise.all([
       this.execCommand(Config.GitCommand.USER_NAME),
       this.execCommand(Config.GitCommand.BRANCH_NAME),
