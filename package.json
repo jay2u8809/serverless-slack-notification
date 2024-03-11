@@ -1,12 +1,16 @@
 {
-  "name": "serverless-deploy-history",
+  "name": "@devian/serverless-deploy-history",
   "version": "0.0.1",
   "description": "Create various types of history when deploying with serverless framework",
   "author": "jay2u8809",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jay2u8809/serverless-deploy-history"
+  },
   "main": "./dist/src/index.js",
   "scripts": {
-    "build": "rm -rf dist && tsc --build",
+    "build": "rm -rf dist && tsc --project tsconfig.build.json",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
   },
   "devDependencies": {
