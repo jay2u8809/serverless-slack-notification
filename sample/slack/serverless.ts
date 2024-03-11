@@ -3,7 +3,7 @@ import type { AWS } from '@serverless/typescript';
 const serverlessConfiguration: AWS = {
   service: 'sample-deploy-history',
   frameworkVersion: '3',
-  plugins: ['serverless-deploy-history'],
+  plugins: ['@devian/serverless-deploy-history'],
   provider: {
     name: 'aws',
     runtime: 'nodejs16.x',

@@ -16,12 +16,12 @@
 ## Installation
 - Using npm
 ```shell
-$ npm install --save-dev serverless-deploy-history
+$ npm install --save-dev @devian/serverless-deploy-history
 ```
 
 - Using yarn
 ```shell
-$ yarn add -D serverless-deploy-history
+$ yarn add -D @devian/serverless-deploy-history
 ```
 
 ## Usage
@@ -30,7 +30,7 @@ $ yarn add -D serverless-deploy-history
 - Plugin
 ```yaml
 plugins:
-  - serverless-deploy-history
+  - @devian/serverless-deploy-history
 ```
 
 - Custom
@@ -46,8 +46,8 @@ custom:
 - Plugin
 ```typescript
 plugins: [
-    'serverless-offline',
-    'serverless-deploy-history'
+    ...,
+    '@devian/serverless-deploy-history'
   ],
 ```
 
