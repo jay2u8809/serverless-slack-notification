@@ -1,5 +1,5 @@
 {
-  "name": "@devian/serverless-deploy-history",
+  "name": "@jian/serverless-deploy-history",
   "version": "0.0.1",
   "description": "Create various types of history when deploying with serverless framework",
   "author": "jay2u8809",
