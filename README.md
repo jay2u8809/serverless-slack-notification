@@ -16,12 +16,12 @@
 ## Installation
 - Using npm
 ```shell
-$ npm install --save-dev @jian/serverless-deploy-history
+$ npm install --save-dev serverless-deploy-history
 ```
 
 - Using yarn
 ```shell
-$ yarn add -D @jian/serverless-deploy-history
+$ yarn add -D serverless-deploy-history
 ```
 
 ## Usage
@@ -30,7 +30,7 @@ $ yarn add -D @jian/serverless-deploy-history
 - Plugin
 ```yaml
 plugins:
-  - @jian/serverless-deploy-history
+  - serverless-deploy-history
 ```
 
 - Custom
@@ -47,7 +47,7 @@ custom:
 ```typescript
 plugins: [
     ...,
-    '@jian/serverless-deploy-history'
+    'serverless-deploy-history'
   ],
 ```
 
