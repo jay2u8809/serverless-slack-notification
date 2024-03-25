@@ -13,6 +13,10 @@
 | 6 | LocalEndAt | Deploy end timestamp (Local) | 
 | 7 | User | Git User name | 
 
+## Required
+- git
+- nodejs
+
 ## Installation
 - Using npm
 ```shell
