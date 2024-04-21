@@ -15,7 +15,10 @@ export class ServerlessDeployHistoryRunner {
 
   async exec(): Promise<boolean> {
     const dto: ServerlessDeployHistoryDto = await this.initDeployHistoryDto();
-    return this.sendNotification(dto);
+    if (this.checkStage()) {
+      return this.sendNotification(dto);
+    }
+    return false;
   }
 
   // === private ===
@@ -45,5 +48,23 @@ export class ServerlessDeployHistoryRunner {
 
   private getSlsCustomInfo(): DeployHistoryCustom {
     return this.serverless.service.custom[Config.Title] as DeployHistoryCustom;
+  }
+
+  private checkStage(): boolean {
+    const {exclude, include} = this.getSlsCustomInfo().stage || {};
+
+    if (exclude && include) {
+      console.error('Invalid setting. Please select either exclude or include');
+      return false;
+    }
+    else if (!exclude && !include) {
+      return true;
+    }
+    else if (exclude && !include) {
+      return !exclude.find(item => item === this.options.stage);
+    }
+    else if (!exclude && include) {
+      return !!include.find(item => item === this.options.stage);
+    }
   }
 }
