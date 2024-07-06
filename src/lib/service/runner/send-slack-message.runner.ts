@@ -49,7 +49,7 @@ export class SendSlackMessageRunner {
     };
   }
 
-  async sendSlackMessage(message: unknown): Promise<boolean> {
+  private async sendSlackMessage(message: unknown): Promise<boolean> {
     // webhook url
     const url = this.custom.slack.webhook;
     try {
