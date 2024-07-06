@@ -1,70 +1,76 @@
 import Serverless from 'serverless';
 import { ServerlessDeployHistoryDto } from '../../interface/serverless-deploy-history.dto';
-import { DeployHistoryCustom } from '../../interface/deploy-history-custom.interface';
+import { CustomKey, DeployHistoryCustom } from '../../interface/deploy-history-custom.interface';
 import { Config } from '../../interface/deploy-history.config';
-import { DeployHistoryHelper } from '../helper/deploy-history.helper';
-import { MessageHelper } from '../helper/message.helper';
+import { Helper } from '../helper/deploy-history.helper';
+import { SendSlackMessageRunner } from './send-slack-message.runner';
 
 const TAG = 'ServerlessDeployHistoryService';
 
 export class ServerlessDeployHistoryRunner {
+  private readonly custom: DeployHistoryCustom;
+
   constructor(
     private readonly serverless: Serverless,
     private readonly options: Serverless.Options,
-  ) {}
+  ) {
+    this.custom = this.serverless.service.custom[Config.Title] as DeployHistoryCustom;
+  }
 
-  async exec(): Promise<boolean> {
+  public async run(): Promise<boolean> {
+    // init
     const dto: ServerlessDeployHistoryDto = await this.initDeployHistoryDto();
-    if (this.checkStage()) {
-      return this.sendNotification(dto);
+    // check stage
+    if (!this.checkStage()) {
+      console.log('It\'s not deploy history target', this.options.stage);
+      return false;
     }
-    return false;
+    // return
+    return this.exec(dto);
   }
 
   // === private ===
-  private async sendNotification(
-    dto: ServerlessDeployHistoryDto,
-  ): Promise<boolean> {
-    // slack webhook url
-    const url = this.getSlsCustomInfo().slack.webhook;
-
-    const helper: MessageHelper = new MessageHelper();
-    // make rich message
-    const data = helper.makeRichMessageTemplate(
-      dto,
-      this.getSlsCustomInfo().slack.title || Config.Slack.title,
-    );
-    // send slack message
-    return helper.sendSlackMessage(url, data);
-  }
-
   private async initDeployHistoryDto(): Promise<ServerlessDeployHistoryDto> {
-    const helper: DeployHistoryHelper = new DeployHistoryHelper();
-    return helper.generateDeployHistoryDto(
+    return Helper.createDeployHistoryDto(
       this.serverless.service.service,
       this.options.stage,
     );
   }
 
-  private getSlsCustomInfo(): DeployHistoryCustom {
-    return this.serverless.service.custom[Config.Title] as DeployHistoryCustom;
-  }
-
   private checkStage(): boolean {
-    const {exclude, include} = this.getSlsCustomInfo().stage || {};
-
-    if (exclude && include) {
-      console.error('Invalid setting. Please select either exclude or include');
-      return false;
-    }
-    else if (!exclude && !include) {
+    // get stage data from serverless.ts or serverless.yaml
+    const stages: string[] = this.custom.stage || [];
+    // target: all stages
+    if (stages.length === 0)  {
       return true;
     }
-    else if (exclude && !include) {
-      return !exclude.find(item => item === this.options.stage);
+    // check stage info
+    return stages.some(item => item === this.options.stage);
+  }
+
+  private async exec(dto: ServerlessDeployHistoryDto): Promise<boolean> {
+    // get custom setting keys
+    const keys: string[] = Object.keys(this.custom);
+    try {
+      // exec deploy history process
+      await Promise.all(keys.map(async (key: string) => {
+        switch(key) {
+          case CustomKey.slack:
+            await this.sendSlackMessage(dto);
+            console.log('complete send slack message');
+            break;
+        }
+      }));
+      return true;
+    } catch(err) {
+      return false;
     }
-    else if (!exclude && include) {
-      return !!include.find(item => item === this.options.stage);
-    }
+  }
+
+  private async sendSlackMessage(
+    dto: ServerlessDeployHistoryDto,
+  ): Promise<boolean> {
+    const runner = new SendSlackMessageRunner(dto, this.custom);
+    return runner.run();
   }
 }
