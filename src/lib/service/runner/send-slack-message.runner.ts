@@ -8,7 +8,7 @@ const TAG = 'SendSlackMessageRunner';
 
 export class SendSlackMessageRunner {
   constructor(
-    private readonly history: ServerlessDeployHistoryDto, 
+    private readonly history: ServerlessDeployHistoryDto,
     private readonly custom: DeployHistoryCustom,
   ) {}
 
@@ -57,8 +57,8 @@ export class SendSlackMessageRunner {
       const response = await Helper.sendMessage(url, message);
       return response.data === 'ok';
     } catch (err) {
-      console.error('fail-send-slack-message', err.message);
+      console.error(TAG, 'fail-send-slack-message', err.message);
       throw new Error('fail-send-slack-message');
     }
-  };
+  }
 }

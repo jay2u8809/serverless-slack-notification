@@ -5,7 +5,7 @@ export const CustomKey: Record<string, CustomKeyType> = {
 };
 
 export interface DeployHistoryCustom {
-  stage: string[],
+  stage: string[];
   slack: {
     webhook: string;
     title: string;

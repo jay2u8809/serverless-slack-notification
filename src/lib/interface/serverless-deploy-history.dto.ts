@@ -7,7 +7,7 @@ export class ServerlessDeployHistoryDto {
   private _branch: string;
   private _endAt: string;
   private _localEndAt: string;
-  
+
   // getter and setter
   public get name(): string {
     return this._name;

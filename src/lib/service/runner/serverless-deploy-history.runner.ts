@@ -1,6 +1,9 @@
 import Serverless from 'serverless';
 import { ServerlessDeployHistoryDto } from '../../interface/serverless-deploy-history.dto';
-import { CustomKey, DeployHistoryCustom } from '../../interface/deploy-history-custom.interface';
+import {
+  CustomKey,
+  DeployHistoryCustom,
+} from '../../interface/deploy-history-custom.interface';
 import { Config } from '../../interface/deploy-history.config';
 import { Helper } from '../helper/deploy-history.helper';
 import { SendSlackMessageRunner } from './send-slack-message.runner';
@@ -14,7 +17,9 @@ export class ServerlessDeployHistoryRunner {
     private readonly serverless: Serverless,
     private readonly options: Serverless.Options,
   ) {
-    this.custom = this.serverless.service.custom[Config.Title] as DeployHistoryCustom;
+    this.custom = this.serverless.service.custom[
+      Config.Title
+    ] as DeployHistoryCustom;
   }
 
   public async run(): Promise<boolean> {
@@ -22,7 +27,7 @@ export class ServerlessDeployHistoryRunner {
     const dto: ServerlessDeployHistoryDto = await this.initDeployHistoryDto();
     // check stage
     if (!this.checkStage()) {
-      console.log('It\'s not deploy history target', this.options.stage);
+      console.log(TAG, "It's not deploy history target", this.options.stage);
       return false;
     }
     // return
@@ -41,11 +46,11 @@ export class ServerlessDeployHistoryRunner {
     // get stage data from serverless.ts or serverless.yaml
     const stages: string[] = this.custom.stage || [];
     // target: all stages
-    if (stages.length === 0)  {
+    if (stages.length === 0) {
       return true;
     }
     // check stage info
-    return stages.some(item => item === this.options.stage);
+    return stages.some((item) => item === this.options.stage);
   }
 
   private async exec(dto: ServerlessDeployHistoryDto): Promise<boolean> {
@@ -53,16 +58,18 @@ export class ServerlessDeployHistoryRunner {
     const keys: string[] = Object.keys(this.custom);
     try {
       // exec deploy history process
-      await Promise.all(keys.map(async (key: string) => {
-        switch(key) {
-          case CustomKey.slack:
-            await this.sendSlackMessage(dto);
-            console.log('complete send slack message');
-            break;
-        }
-      }));
+      await Promise.all(
+        keys.map(async (key: string) => {
+          switch (key) {
+            case CustomKey.slack:
+              await this.sendSlackMessage(dto);
+              console.log(TAG, 'complete send slack message');
+              break;
+          }
+        }),
+      );
       return true;
-    } catch(err) {
+    } catch (err) {
       return false;
     }
   }

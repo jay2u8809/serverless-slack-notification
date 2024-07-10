@@ -5,7 +5,10 @@ import * as childProcess from 'node:child_process';
 import { ChildProcess } from 'node:child_process';
 import axios from 'axios';
 
-const createDeployHistoryDto = async (name: string, stage?: string): Promise<ServerlessDeployHistoryDto> => {
+const createDeployHistoryDto = async (
+  name: string,
+  stage?: string,
+): Promise<ServerlessDeployHistoryDto> => {
   // fetch git info
   const [userName, branch, revision]: string[] = await Promise.all([
     execGitCommand(Config.GitCommand.USER_NAME),
@@ -23,7 +26,7 @@ const createDeployHistoryDto = async (name: string, stage?: string): Promise<Ser
   dto.localEndAt = new Date().toLocaleString();
   // return
   return dto;
-}
+};
 
 const sendMessage = async (url: string, data: unknown): Promise<any> => {
   const response = await axios.post(url, data, {
@@ -34,7 +37,7 @@ const sendMessage = async (url: string, data: unknown): Promise<any> => {
   return response.data;
 };
 
-// === private === 
+// === private ===
 const execGitCommand = async (command: string): Promise<string> => {
   return new Promise((resolve, reject) => {
     const result: ChildProcess = childProcess.exec(command, {
@@ -51,7 +54,7 @@ const execGitCommand = async (command: string): Promise<string> => {
         resolve(result);
       });
   });
-}
+};
 
 export const Helper = {
   createDeployHistoryDto,
