@@ -1,13 +1,9 @@
-import {z} from 'zod';
-
-const DeployInfoSchema = z.object({
-  name: z.string().describe('required: sls service name'),
-  stage: z.string().describe('required: sls stage name'),
-  userName: z.string().nullish().describe('git user name'),
-  revision: z.string().nullish().describe('git revision'),
-  branch: z.string().nullish().describe('git branch name'),
-  endAt: z.string().nullish().describe('deployment end time'),
-  localEndAt: z.string().nullish().describe('deployment end time'),
-});
-
-export type DeployInfoType = z.infer<typeof DeployInfoSchema>
+export class DeployInfoDto {
+  name: string; // required: sls service name
+  stage: string; // required: sls stage name
+  userName?: string; // git user name
+  revision?: string; // git revision
+  branch?: string; // git branch name
+  endAt?: string; // deployment end time
+  localEndAt?: string; // deployment end time (local)
+}
