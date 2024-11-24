@@ -1,11 +1,9 @@
 import Serverless from 'serverless';
-import { ServerlessDeployHistoryDto } from '../../interface/serverless-deploy-history.dto';
+import { DeployInfoDto } from '../../interface/serverless-deploy-history.dto';
 import { DeployHistoryCustom } from '../../interface/deploy-history-custom.interface';
 import { Config } from '../../interface/deploy-history.config';
 import { DeployHistoryHelper } from '../helper/deploy-history.helper';
 import { MessageHelper } from '../helper/message.helper';
-
-const TAG = 'ServerlessDeployHistoryService';
 
 export class ServerlessDeployHistoryRunner {
   constructor(
@@ -14,30 +12,26 @@ export class ServerlessDeployHistoryRunner {
   ) {}
 
   async exec(): Promise<boolean> {
-    const dto: ServerlessDeployHistoryDto = await this.initDeployHistoryDto();
+    const dto: DeployInfoDto = await this.initDeployHistoryDto();
     return this.sendNotification(dto);
   }
 
   // === private ===
-  private async sendNotification(
-    dto: ServerlessDeployHistoryDto,
-  ): Promise<boolean> {
+  private async sendNotification(dto: DeployInfoDto): Promise<boolean> {
     // slack webhook url
     const url = this.getSlsCustomInfo().slack.webhook;
 
-    const helper: MessageHelper = new MessageHelper();
     // make rich message
-    const data = helper.makeRichMessageTemplate(
+    const data = MessageHelper.makeRichMessageTemplate(
       dto,
       this.getSlsCustomInfo().slack.title || Config.Slack.title,
     );
     // send slack message
-    return helper.sendSlackMessage(url, data);
+    return MessageHelper.sendSlackMessage(url, data);
   }
 
-  private async initDeployHistoryDto(): Promise<ServerlessDeployHistoryDto> {
-    const helper: DeployHistoryHelper = new DeployHistoryHelper();
-    return helper.generateDeployHistoryDto(
+  private async initDeployHistoryDto(): Promise<DeployInfoDto> {
+    return DeployHistoryHelper.generateDeployHistoryDto(
       this.serverless.service.service,
       this.options.stage,
     );

@@ -1,45 +1,44 @@
 import * as childProcess from 'node:child_process';
-import { ChildProcess } from 'node:child_process';
-import { ServerlessDeployHistoryDto } from '../../interface/serverless-deploy-history.dto';
+import { DeployInfoDto } from '../../interface/serverless-deploy-history.dto';
 import { Config } from '../../interface/deploy-history.config';
 
-export class DeployHistoryHelper {
-  async execCommand(command: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const result: ChildProcess = childProcess.exec(command, {
-        encoding: 'utf8',
-      });
-      result.stdout
-        .on('error', (err: Error) => {
-          console.error('command-exec-error', command, err);
-          reject(undefined);
-        })
-        .on('data', (data: string) => {
-          // remove new-line character
-          const result: string = [...data].filter((c) => c !== '\n').join('');
-          resolve(result);
-        });
-    });
-  }
+const TAG = 'DeployHistoryHelper';
 
-  async generateDeployHistoryDto(
-    name: string,
-    stage?: string,
-  ): Promise<ServerlessDeployHistoryDto> {
-    const [userName, branch, revision]: string[] = await Promise.all([
-      this.execCommand(Config.GitCommand.USER_NAME),
-      this.execCommand(Config.GitCommand.BRANCH_NAME),
-      this.execCommand(Config.GitCommand.REVISION),
-    ]);
-    const now = new Date();
-    return {
-      name: name,
-      stage: stage || 'dev',
-      endAt: now.toISOString(),
-      localEndAt: now.toLocaleString(),
-      userName,
-      branch,
-      revision,
-    } as ServerlessDeployHistoryDto;
+const execGitPrintCommand = async (command: string): Promise<string | null> => {
+  try {
+    const exec: string = childProcess.execSync(command, {
+      encoding: 'utf8',
+    });
+    // remove new-line character
+    return [...exec].filter((c) => c !== '\n').join('');
+  } catch (err) {
+    console.error(TAG, 'command-exec-error', command);
+    return null;
   }
-}
+};
+
+const generateDeployHistoryDto = async (
+  name: string,
+  stage?: string,
+): Promise<DeployInfoDto> => {
+  const [userName, branch, revision]: string[] = await Promise.all([
+    execGitPrintCommand(Config.GitCommand.USER_NAME),
+    execGitPrintCommand(Config.GitCommand.BRANCH_NAME),
+    execGitPrintCommand(Config.GitCommand.REVISION),
+  ]);
+  const now = new Date();
+  return {
+    name: name,
+    stage: stage || 'dev',
+    endAt: now.toISOString(),
+    localEndAt: now.toLocaleString(),
+    userName: userName || `NoUserName`,
+    branch: branch || `NoBranchName`,
+    revision: revision || `NoRevision`,
+  } as DeployInfoDto;
+};
+
+export const DeployHistoryHelper = {
+  execGitPrintCommand,
+  generateDeployHistoryDto,
+};
