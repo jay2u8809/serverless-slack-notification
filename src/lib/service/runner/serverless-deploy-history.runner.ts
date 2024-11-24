@@ -1,5 +1,5 @@
 import Serverless from 'serverless';
-import { ServerlessDeployHistoryDto } from '../../interface/serverless-deploy-history.dto';
+import { DeployInfoType } from '../../interface/serverless-deploy-history.dto';
 import { DeployHistoryCustom } from '../../interface/deploy-history-custom.interface';
 import { Config } from '../../interface/deploy-history.config';
 import { DeployHistoryHelper } from '../helper/deploy-history.helper';
@@ -14,13 +14,13 @@ export class ServerlessDeployHistoryRunner {
   ) {}
 
   async exec(): Promise<boolean> {
-    const dto: ServerlessDeployHistoryDto = await this.initDeployHistoryDto();
+    const dto: DeployInfoType = await this.initDeployHistoryDto();
     return this.sendNotification(dto);
   }
 
   // === private ===
   private async sendNotification(
-    dto: ServerlessDeployHistoryDto,
+    dto: DeployInfoType,
   ): Promise<boolean> {
     // slack webhook url
     const url = this.getSlsCustomInfo().slack.webhook;
@@ -35,9 +35,8 @@ export class ServerlessDeployHistoryRunner {
     return helper.sendSlackMessage(url, data);
   }
 
-  private async initDeployHistoryDto(): Promise<ServerlessDeployHistoryDto> {
-    const helper: DeployHistoryHelper = new DeployHistoryHelper();
-    return helper.generateDeployHistoryDto(
+  private async initDeployHistoryDto(): Promise<DeployInfoType> {
+    return DeployHistoryHelper.generateDeployHistoryDto(
       this.serverless.service.service,
       this.options.stage,
     );

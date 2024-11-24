@@ -1,10 +1,12 @@
 import Serverless from 'serverless';
-import { ServerlessDeployHistoryDto } from './interface/serverless-deploy-history.dto';
+import { DeployInfoType } from './interface/serverless-deploy-history.dto';
 import { ServerlessDeployHistoryRunner } from './service/runner/serverless-deploy-history.runner';
 
+type Hooks = { [key: string]: () => void };
+
 export class ServerlessDeployHistory {
-  hooks: { [key: string]: () => void };
-  dto: ServerlessDeployHistoryDto;
+  hooks: Hooks;
+  dto: DeployInfoType;
   runner: ServerlessDeployHistoryRunner;
 
   constructor(

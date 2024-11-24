@@ -1,15 +1,17 @@
 import axios from 'axios';
-import { ServerlessDeployHistoryDto } from 'src/lib/interface/serverless-deploy-history.dto';
+import { DeployInfoType } from 'src/lib/interface/serverless-deploy-history.dto';
+import { AxiosRequestConfig } from 'axios/index';
 
 export class MessageHelper {
   async sendSlackMessage(url: string, data: any): Promise<boolean> {
     try {
       // send slack message
-      const response = await axios.post(url, data, {
+      const config: AxiosRequestConfig = {
         headers: {
           'Content-Type': 'application/json',
         },
-      });
+      }
+      const response = await axios.post(url, data, config);
       return response.data === 'ok';
     } catch (err) {
       console.error('fail-send-slack', err.message);
@@ -18,7 +20,7 @@ export class MessageHelper {
   }
 
   makeRichMessageTemplate(
-    dto: ServerlessDeployHistoryDto,
+    dto: DeployInfoType,
     title: string,
   ): object {
     const map = new Map<string, string>()
